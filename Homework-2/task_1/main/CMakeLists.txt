@@ -1,3 +1,3 @@
-add_executable(play-game src/main.cpp)
+add_executable(task_1 src/main.cpp)
 
-target_link_libraries(play-game PRIVATE guessing-game)
+target_link_libraries(task_1 PRIVATE guessing-game)
