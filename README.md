@@ -8,6 +8,8 @@ Course By: University of Bonn
 	 - [x] Task-1: Bash Commands
 	 - [x] Task-2: Build Systems
  - [ ] Homework-2
+	 - [x] Task-1: Number Guessing Game
+	 - [ ] Task-2: Input Parameters and Streams
  - [ ] Homework-3
  - [ ] Homework-4
  - [ ] Homework-5
