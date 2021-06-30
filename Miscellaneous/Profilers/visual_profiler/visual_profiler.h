@@ -1,5 +1,4 @@
-//
-// Basic instrumentation profiler by Cherno
+// Basic instrumentation profiler. Base code taken from: https://gist.github.com/TheCherno/31f135eea6ee729ab5f26a6908eb3a5e
 
 // Usage: include this header file somewhere in your code (eg. precompiled header), and then use like:
 //
@@ -9,8 +8,6 @@
 //     // Code
 // }
 // Instrumentor::Get().EndSession();                        // End Session
-//
-// You will probably want to macro-fy this, to switch on/off easily and use things like __FUNCSIG__ for the profile name.
 //
 #pragma once
  
@@ -36,42 +33,50 @@ struct ProfileResult
     uint32_t ThreadID;
 };
 
-struct InstrumentationSession
-{
-    std::string Name;
-};
-
-class Instrumentor
-{
+class Instrumentor {
 private:
-    InstrumentationSession* m_CurrentSession;
+    std::string m_CurrentSessionName;
     std::ofstream m_OutputStream;
     int m_ProfileCount;
     std::mutex m_lock;
+    bool m_activeSession = false;
+
+    Instrumentor() // Our visual profiler is a singleton, so constructor should be private
+        : m_CurrentSessionName(nullptr), m_ProfileCount(0)
+    {}
+
 public:
-    Instrumentor()
-        : m_CurrentSession(nullptr), m_ProfileCount(0)
-    {
+    ~Instrumentor() {
+        EndSession();
     }
 
-    void BeginSession(const std::string& name, const std::string& filepath = "results.json")
-    {
+    static Instrumentor& Get() {
+        static Instrumentor instance;
+        return instance;
+    }
+
+    void BeginSession(const std::string& name, const std::string& filepath = "results.json") {
+        if(m_activeSession)
+            EndSession(); // Clean-up current active session if a new session is started without ending the previous active one
+        
         m_OutputStream.open(filepath);
         WriteHeader();
-        m_CurrentSession = new InstrumentationSession{ name };
+        m_CurrentSessionName = name;
+        m_activeSession = true;
     }
 
-    void EndSession()
-    {
+    void EndSession() {
+        if(!m_activeSession)
+            return; // No active session to close
+
         WriteFooter();
         m_OutputStream.close();
-        delete m_CurrentSession;
-        m_CurrentSession = nullptr;
+        m_CurrentSessionName = nullptr;
         m_ProfileCount = 0;
+        m_activeSession = false;
     }
 
-    void WriteProfile(const ProfileResult& result)
-    {
+    void WriteProfile(const ProfileResult& result) {
         std::lock_guard<std::mutex> lock(m_lock);
 
         if (m_ProfileCount++ > 0)
@@ -93,23 +98,17 @@ public:
         m_OutputStream.flush();
     }
 
-    void WriteHeader()
-    {
+    void WriteHeader() {
         m_OutputStream << "{\"otherData\": {},\"traceEvents\":[";
         m_OutputStream.flush();
     }
 
-    void WriteFooter()
-    {
+    void WriteFooter() {
         m_OutputStream << "]}";
         m_OutputStream.flush();
     }
 
-    static Instrumentor& Get()
-    {
-        static Instrumentor instance;
-        return instance;
-    }
+
 };
 
 class InstrumentationTimer
