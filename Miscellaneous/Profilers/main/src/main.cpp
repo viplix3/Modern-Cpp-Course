@@ -2,9 +2,11 @@
 #include <stdlib.h>
 
 #include "textual_profiler.h"
+#include "../../visual_profiler/include/visual_profiler.h"
 
 int main() {
 	{
+		PROFILE_SCOPE("printf");
 		TextualProfiler::Profiler time;
 		printf("\nHello World using printf\n");
 	}
