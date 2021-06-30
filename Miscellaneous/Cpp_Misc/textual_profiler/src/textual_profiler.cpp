@@ -6,6 +6,12 @@ Profiler::Profiler() {
 	m_startTimePoint = std::chrono::high_resolution_clock::now();
 }
 
+Profiler::Profiler(const char* func_name)
+	: m_funcName(func_name), m_Stopped(false)
+	{
+		m_startTimePoint = std::chrono::high_resolution_clock::now();
+	}
+
 Profiler::~Profiler() {
 	Profiler::Stop();
 }
@@ -19,6 +25,9 @@ void Profiler::Stop() {
 	auto duration  = endTime - startTime;
 	double milliSeconds = duration * 0.001;
 
-	std::cout << duration << "uc (" << milliSeconds << "ms)\n";
+	if(m_funcName == nullptr)
+		std::cout << duration << "uc (" << milliSeconds << "ms)\n";
+	else
+		std::cout << m_funcName << " : " << duration << "uc (" << milliSeconds << "ms)\n";
 }
 }

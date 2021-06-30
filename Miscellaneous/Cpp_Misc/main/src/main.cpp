@@ -10,7 +10,7 @@ int main() {
 	}
 
 	{
-		TextualProfiler::Profiler time;
+		TextualProfiler::Profiler time("std::cout");
 		std::cout << "\nHello world using std::cout\n";
 	}
 
