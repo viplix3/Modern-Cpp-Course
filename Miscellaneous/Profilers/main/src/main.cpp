@@ -4,7 +4,7 @@
 #include "textual_profiler.h"
 #include "visual_profiler.h"
 
-void print_hello_world() {
+void print_hello_world(int rand) {
 	PROFILE_FUNCTION();
 	TextualProfiler::Profiler time("print_hello_world()");
 	std::cout << "\nHello World" << std::endl;
@@ -12,7 +12,7 @@ void print_hello_world() {
 
 int main() {
 	Instrumentor::Get().BeginSession("main", "/home/viplix3/GitHub/Modern-Cpp-Course/Miscellaneous/Profilers/main/results.json");
-	print_hello_world();
+	print_hello_world(0);
 
 	{
 		PROFILE_SCOPE("printf");
