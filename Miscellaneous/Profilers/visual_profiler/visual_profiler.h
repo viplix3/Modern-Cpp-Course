@@ -45,6 +45,8 @@ private:
     {}
 
 public:
+    Instrumentor(const Instrumentor&) = delete;
+
     ~Instrumentor() {
         EndSession();
     }
