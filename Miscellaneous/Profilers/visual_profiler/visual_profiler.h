@@ -35,14 +35,13 @@ struct ProfileResult
 
 class Instrumentor {
 private:
-    std::string m_CurrentSessionName;
+    std::string m_CurrentSessionName = "None";
     std::ofstream m_OutputStream;
     int m_ProfileCount;
     std::mutex m_lock;
     bool m_activeSession = false;
 
     Instrumentor() // Our visual profiler is a singleton, so constructor should be private
-        : m_CurrentSessionName(nullptr), m_ProfileCount(0)
     {}
 
 public:
@@ -71,7 +70,7 @@ public:
 
         WriteFooter();
         m_OutputStream.close();
-        m_CurrentSessionName = nullptr;
+        m_CurrentSessionName = "None";
         m_ProfileCount = 0;
         m_activeSession = false;
     }
